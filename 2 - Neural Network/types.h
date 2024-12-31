@@ -1,7 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-typedef struct {
+typedef struct Neuron {
     float* weights;
     float bias;
     float output;
@@ -10,13 +10,13 @@ typedef struct {
     float (*derivate_activation)(float);
 } Neuron;
 
-typedef struct {
-    Neuron* neurons;
+typedef struct Layer {
+    Neuron** neurons;
     int num_neurons;
 } Layer;
 
-typedef struct {
-    Layer* layers;
+typedef struct NeuralNetwork {
+    Layer** layers;
     int num_layers;
 } NeuralNetwork;
 

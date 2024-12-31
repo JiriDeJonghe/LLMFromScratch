@@ -4,9 +4,9 @@
 #include "types.h"
 #include "activations.h"
 
-Neuron create_neuron(int num_inputs, ActivationFunc activation, ActivationFunc derivate_activation);
-Layer create_layer(int num_neurons, int num_inputs_per_neuron, ActivationFunc activation, ActivationFunc derivate_activation);
-NeuralNetwork create_neural_network(int *layer_sizes, int num_layers, ActivationFunc *activations, ActivationFunc* derivate_activations);
+Neuron* create_neuron(int num_inputs, ActivationFunc activation, ActivationFunc derivate_activation);
+Layer* create_layer(int num_neurons, int num_inputs_per_neuron, ActivationFunc activation, ActivationFunc derivate_activation);
+NeuralNetwork* create_neural_network(int *layer_sizes, int num_layers, ActivationFunc *activations, ActivationFunc* derivate_activations);
 
 void free_neuron(Neuron* neuron);
 void free_layer(Layer* layer);
