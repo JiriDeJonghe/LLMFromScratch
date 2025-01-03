@@ -7,43 +7,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/**
-* @struct Perceptron
-* @brief Represents a single perceptron neuron
-*/
-typedef struct Perceptron {
-    float* weights; // Array of input weights
-    float bias; // Bias term. This is bias term that gets added to your perceptron, independent of the weights.
-    float output; // The calculated output of the perceptron. This is a weighted sum using the weights and the inputs.
-    int num_inputs; // The number of input connections. This is the same number of weights.
-} Perceptron;
-
-/**
-* @struct Sample
-* @brief Represents a single sample to be fitted by the perceptron
-*/
-typedef struct Sample {
-    float* inputs; // Array of inputs for this sample.
-    int output; // The traget label for this sample.
-} Sample;
-
-/**
-* @struct Dataset
-* @brief Represents the dataset on which to fit the perceptron on. Consists of Samples
-*/
-typedef struct Dataset {
-    Sample* samples; // Array of samples in this dataset.
-    int num_samples; // The number of samples in this dataset.
-} Dataset;
-
-/**
-* @struct TrainingParameters
-* @brief Combines all the possible training parameters in a single struct
-*/
-typedef struct TrainingParameters {
-    float learning_rate; // The learning rate to be used in each training step.
-    int num_training_steps; // The number of training steps to perform.
-} TrainingParameters;
+#include "perceptron.h"
+#include "dataset.h"
 
 /**
 * @brief Creates and initializes a new perceptron
@@ -71,7 +36,7 @@ Perceptron* create_perceptron(int num_inputs) {
     }
 
     for (int w = 0; w < num_inputs; w++) {
-        perceptron->weights[w] = (float)rand() / RAND_MAX - 0.0f;
+        perceptron->weights[w] = (float)rand() / RAND_MAX - 0.5f;
     }
 
     perceptron->num_inputs = num_inputs;
@@ -148,8 +113,8 @@ void free_dataset(Dataset* dataset) {
  * @param value Input value to apply the function on
  * @return int 1 if value > 0, 0 otherwise
  */
-int heavyside_step_function(float value) {
-    return value > 0 ? 1 : 0;
+int heaviside_step_function(float value) {
+    return value >= 0 ? 1 : 0;
 }
 
 /**
@@ -167,7 +132,7 @@ float calculate_output(Perceptron* perceptron, float* inputs) {
         weighted_sum += perceptron->weights[i] * inputs[i];
     }
 
-    return heavyside_step_function(weighted_sum);
+    return heaviside_step_function(weighted_sum);
 }
 
 /** 
@@ -229,79 +194,6 @@ void train(Perceptron* perceptron, Dataset* dataset, TrainingParameters* trainin
         }
     }
 }
-
-/**
- * @brief Creates an example dataset that can be used for training the model
- *        Defaults to creating a dataset to solve the AND gate problem
- *
- * @return Dataset* Pointer to the dataset that has been created
- */
-Dataset* create_example_dataset() {
-    const int SAMPLES_PER_QUADRANT = 5;
-    const int NUM_SAMPLES = SAMPLES_PER_QUADRANT * 4;
-    const int NUM_INPUTS = 2;
-
-    Dataset* dataset = create_dataset(NUM_SAMPLES, NUM_INPUTS);
-    if (dataset == NULL) {
-        return NULL;
-    }
-
-    float inputs[20][2] = {
-            // Quadrant (0,0)
-            {0.0f, 0.0f},
-            {0.1f, 0.2f},
-            {0.2f, 0.1f},
-            {0.15f, 0.15f},
-            {0.05f, 0.1f},
-            
-            // Quadrant (0,1)
-            {0.0f, 1.0f},
-            {0.1f, 0.8f},
-            {0.2f, 0.9f},
-            {0.15f, 0.85f},
-            {0.05f, 0.95f},
-            
-            // Quadrant (1,0)
-            {1.0f, 0.0f},
-            {0.8f, 0.1f},
-            {0.9f, 0.2f},
-            {0.85f, 0.15f},
-            {0.95f, 0.05f},
-            
-            // Quadrant (1,1)
-            {1.0f, 1.0f},
-            {0.8f, 0.8f},
-            {0.9f, 0.9f},
-            {0.85f, 0.95f},
-            {0.95f, 0.85f}
-        };
-        
-        // The output values in the case of AND
-        int outputs[20] = {
-             0, 0, 0, 0, 0,
-             0, 0, 0, 0, 0,
-             0, 0, 0, 0, 0,
-             1, 1, 1, 1, 1
-        };
-
-        // The output values in the case of XOR
-        // int outputs[20] = {
-        //     0, 0, 0, 0, 0,
-        //     1, 1, 1, 1, 1,
-        //     1, 1, 1, 1, 1,
-        //     0, 0, 0, 0, 0
-        // };
-
-    for (int i = 0; i < NUM_SAMPLES; i++) {
-        for (int j = 0; j < NUM_INPUTS; j++) {
-            dataset->samples[i].inputs[j] = inputs[i][j];
-        }
-        dataset->samples[i].output = outputs[i];
-    }
-
-    return dataset;
-}
-
 
 int main() {
     srand(21);
