@@ -167,11 +167,10 @@ Before we move on, let's understand why we need one more piece to complete our p
 Indeed, the Heaviside step function actually uses 0 as the decision boundary, meaning that it maps any value smaller than 0 to 0 and any value larger or equal to 0 to 1: 
 
 $$
-\[H(x) := \begin{cases}
+H(x) := \begin{cases}
 1, & x \leq 0 \\
 0, & x < 0
 \end{cases}
-\]
 $$
 
 Fortunately, the perceptron has, besides its inputs, a property called the **bias** to deal with this exact issue. The bias is taken into account in the weighted sum and decides our decision boundary. We update the weighted sum equation: 
@@ -179,16 +178,10 @@ $$y_{willingness} = w_{weather}*x_{weather} + w_{time}*x_{time} + b,$$
 with $b$ the bias.
 
 We can find $b$ by taking a close look at this equation, we now that $y_{willingness} = 0$ is the boundary, so can work out the following:
-$$
-2*x_{weather} + x_{time} + b = 0
-$$
+$$2*x_{weather} + x_{time} + b = 0$$
 The minimum for us to go on a walk is $x_{weather} = 1$ and $x_{time} = 0$:
-$$
-2 + 0 + b = 0 
-$$
-$$
-b = -2
-$$
+$$2 + 0 + b = 0$$ 
+$$b = -2$$
 
 We fill in the equation to show that it is indeed the same, the formula becomes:
 $$y_{willingness} = 2*x_{weather} + x_{time} - 2$$
