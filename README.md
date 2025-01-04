@@ -7,14 +7,14 @@ LLMs did not come out of nowhere, as many like to believe, but instead are a log
 My belief is that everyone is able to understand LLMs if they start from scratch and goes through the path that scientists have gone through as well. At the end they might even get the feeling that they could've invented it themselves, had they been given the time and opportunity. This is my goal for this repo: provide the reader with a guide to be able to understand, explain and create your own LLM from scratch. This repo will incrementally built an LLM starting from the perceptron and gradually built upon its capabilities until we get to LLMs.
 
 In each chapter I will try to built upon the previously acquired knowledge and each section will have three sections:
-1. Introduction - in which I try to explain the main intuition and concepts behind the topic. I'll introduce - using logical examples - the capabilities and algorithms in an intuitive manner. I will cover the capabilities, but also the limitations and will use these ideas to introduce the next topic. This should be readable by anyone. Minimum mathematical understanding required.
+1. Overview - in which I try to explain the main intuition and concepts behind the topic. I'll introduce - using logical examples - the capabilities and algorithms in an intuitive manner. I will cover the capabilities, but also the limitations and will use these ideas to introduce the next topic. This should be readable by anyone. Minimum mathematical understanding required.
 2. Technical Deepdive - in this section I dive deeper into the technical details. I give more formal definitions, try to show relevant links with other works, and in general try to deepen the mathematical understanding behind the algorithms and LLMs in general. I do assume some prior mathematical background or the willingness of the reader to read up on things I assume to be already understood.
 3. Implementation - this section is for the people who like to code: with each chapter I will provide my own C code where I implement the concept that I explain. Users that like to implement it themselves can look at this code for guidance. While the code is written in C, it can be translated to any turing complete language of your choosing. I strongly recommend reading the previous two parts before trying to understand the code, unless you know what you're doing.
 
 ## Chapters
 ### 1 - Perceptron
 
-We start with one of the simplest, yet very important building blocks: the [Perceptron](./1 - Perceptron/README.md). Neural networks, transformers, and LLMs would all not be possible was it not for this small building block.
+We start with one of the simplest, yet very important building blocks: the [Perceptron](https://github.com/JiriDeJonghe/LLMFromScratch/blob/main/1%20-%20Perceptron/README.md). Neural networks, transformers, and LLMs would all not be possible was it not for this small building block.
 
 Simply put, a perceptron is an algorithm used for binary classification by estimating a linear function that divides the search space into two, where samples falling on opposite sides have opposite labels. After estimating the linear function, the perceptron can be used for inference to classify unseen samples.
 
