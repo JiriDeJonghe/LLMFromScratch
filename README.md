@@ -11,6 +11,12 @@ In each chapter I will try to built upon the previously acquired knowledge and e
 2. Technical Deepdive - in this section I dive deeper into the technical details. I give more formal definitions, try to show relevant links with other works, and in general try to deepen the mathematical understanding behind the algorithms and LLMs in general. I do assume some prior mathematical background or the willingness of the reader to read up on things I assume to be already understood.
 3. Implementation - this section is for the people who like to code: with each chapter I will provide my own C code where I implement the concept that I explain. Users that like to implement it themselves can look at this code for guidance. While the code is written in C, it can be translated to any turing complete language of your choosing. I strongly recommend reading the previous two parts before trying to understand the code, unless you know what you're doing.
 
+I do realize that many (smarter) people before me have undertaken the exact same mission. However what I've often found is that they're either outdated, which is of course a by-product of the fast moving field, and I as well won't be able to cover everything there is to learn about these topics. But what I strive to achieve here are two things:
+1. Give you, the reader, a solid understanding such that when people are spewing AI related words, that you at least can contextualize and understand them.
+2. Provide you with a sense of wonder and hopefully light a fire such that you are willing to embark on the path of AI yourself, and maybe inspire you to give back to the community yourself, like I have been inspired by those before me.
+
+Happy Learning!
+
 ## Chapters
 ### 1 - Perceptron
 

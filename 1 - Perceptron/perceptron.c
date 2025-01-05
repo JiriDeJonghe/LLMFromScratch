@@ -174,6 +174,24 @@ void update_weights(Perceptron* perceptron, float* inputs, int target_output, fl
 }
 
 /**
+* @brief Prints out the weights and bias of the perceptron
+*
+* @param perceptron Pointer to perceptron
+*/
+void print_perceptron_weights(const Perceptron* perceptron) {
+    if (perceptron == NULL) {
+        printf("Error: NULL perceptron\n");
+        return;
+    }
+    printf("Bias: %.4f\n", perceptron->bias);
+    printf("Weights:\n");
+    for (int i = 0; i < perceptron->num_inputs; i++) {
+        printf("  Weight[%d]: %.4f\n", i, perceptron->weights[i]);
+    }
+}
+
+
+/**
  * @brief Trains perceptron on given dataset
  *
  * @param perceptron Pointer to perceptron
@@ -184,13 +202,19 @@ void train(Perceptron* perceptron, Dataset* dataset, TrainingParameters* trainin
     if (perceptron == NULL || dataset == NULL || training_parameters == NULL) return;
     if (training_parameters->learning_rate <= 0.0f || training_parameters->learning_rate > 1.0f) return;
 
-    for (int n = 0; n < training_parameters->num_training_steps; n++) {
-        printf("Evaluating perceptron at step: %d", n);
+    for (int n = 0; n < training_parameters->num_epochs; n++) {
+        printf("Evaluating perceptron after epoch: %d", n);
         evaluate_perceptron(perceptron, dataset);
         for (int s = 0; s < dataset->num_samples; s++) {
             Sample* sample = &dataset->samples[s];
             perceptron->output = calculate_output(perceptron, sample->inputs);
             update_weights(perceptron, sample->inputs, sample->output, training_parameters->learning_rate);
+
+            if ((s + 1) % 5 == 0) {
+                printf("Evaluating after processing %d samples in epoch %d\n", s + 1, n);
+                evaluate_perceptron(perceptron, dataset);
+                print_perceptron_weights(perceptron);
+            }
         }
     }
 }
@@ -211,7 +235,7 @@ int main() {
 
     TrainingParameters train_params = {
         .learning_rate = 0.1,
-        .num_training_steps = 10
+        .num_epochs = 2
     };
 
 

@@ -94,7 +94,7 @@ In mathmetical notation, we define the heaviside step function as:
 TODO
 <div align="center">
 
-$H(x) = \begin{cases} 1, & x \leq 2 \\ 0, & x < 2 \end{cases}$
+$H(x) = \begin{cases} 1, & x \ge 2 \\ 0, & x < 2 \end{cases}$
 
 </div>
 
@@ -190,7 +190,7 @@ Indeed, the Heaviside step function actually uses 0 as the decision boundary, me
 TODO
 $$
 H(x) := \begin{cases}
-1, & x \leq 0 \\
+1, & x \ge 0 \\
 0, & x < 0
 \end{cases}
 $$
@@ -263,7 +263,7 @@ Figure 1 provides a visual representation of this process, showing how all these
 
 <div align="center">
 
-![Perceptron](./resources/perceptron.html)
+![Perceptron](./resources/perceptron.png)
 *Diagram of the perceptron*
 
 </div>
@@ -359,6 +359,7 @@ Figure 3 illustrates how a straight line creates two areas. Your line might actu
 <div align="center">
 
 ![Line creates two areas](./resources/areas.png)
+*The straight line divides the plot into two areas*
 
 </div>
 
@@ -366,11 +367,16 @@ And that's all there is to it! We can now train our perceptron and see how the l
 
 <div align="center">
 
-[FIGURE 4 HERE]
+![Lines showing how the model learns](./resources/learning.png)
+*The model changes its parameters over time*
 
 </div>
 
-Our final model achieves an *accuracy* of 97%, meaning that three cases are misclassified. This is pretty good, but do remember that we have simplified the reality to provide an intuitive approach to understanding the perceptron. Unfortunately, this is where the perceptron starts showing its limitations...
+The purple line, which we randomly generated the weights for classifies everything as fraudulent, which gives a horrendous accuracy of 16%. However, after only having seen 5 samples, the accuracy jumps up to 83%, this is because now every single transfer (except for one) is classified as legitimate (watch the blue line). This is due having many more samples of legitimate transfers then fraudulent. This is what is called an **imbalanced dataset**. Properly handling an imbalanced dataset can be tricky, however, due to the simple nature of our example, it will not prove to be an issue here. 
+
+We can see the model going to a better line after about 15 samples. If we take a look at the green line, we notice that there are still 4 misclassifications, two red and two blue, for a final accuracy of 96%. But we can do better, our final model figured out a way to draw a line where only three cases are misclassified, all of them being blue. 
+
+This is an amazing result! Using a very simple algorithm, we were able to say correctly for 97% of the transfers whether they were fraudulent or not. Alas, reality is more complicated than this, and, unfortunately, this is where the perceptron starts showing its limitations...
 
 ### The Perceptron
 
@@ -397,11 +403,36 @@ In this section I assume the reader to have a somewhat stronger background in ma
 ### Updating weights
 
 As mentioned before, the perceptron works by taking the weighted sum over the inputs using the weights: 
-$$\sum_{i} w_ix_i + b = w_1x_1 + w_2x_2 + \ldots + w_nx_n + b$$
 
-Or alternatively, using vector notation, let $$\vec{w} = \begin{bmatrix} w_1 \\ w_2 \\ \vdots \\ w_n\end{bmatrix}$$
-and $$\vec{x} = \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix}$$
-Then we get $$weighted_sum = \vec{w}^T \vec{x}+ b$$ 
+<div align="center">
+
+$\sum_{i} w_ix_i + b = w_1x_1 + w_2x_2 + \ldots + w_nx_n + b$
+
+</div>
+
+Or alternatively, using vector notation, let 
+TODO
+<div align="center">
+    
+$\vec{w} = \begin{bmatrix} w_1 \\ w_2 \\ \vdots \\ w_n\end{bmatrix}$
+
+</div>
+
+and 
+
+<div align="center">
+
+$\vec{x} = \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix}$
+
+</div>
+
+Then we get 
+
+<div align="center">
+
+$weighted_sum = \vec{w}^T \vec{x}+ b$
+
+</div>
 
 Furthermore, we define the following:
 $w_i^{t+1}$: the next value of weight $i$
@@ -415,8 +446,17 @@ $r$: The learning rate r controls how much we adjust our weights in response to 
 
 To update the weights we define the following:
 
-$$w_i^{t+1} = w_i^t + r*(y - \hat{y})*x_i,$$
-$$b^{t+1} = b^{t} + r*(y - \hat{y}).$$
+<div align="center">
+
+$w_i^{t+1} = w_i^t + r*(y - \hat{y})*x_i,$
+
+</div>
+<div align="center">
+
+$b^{t+1} = b^{t} + r*(y - \hat{y}).$
+
+</div>
+
 Notice that if the perceptron has predicted the output correctly, than $(y - \hat{y}) = 0$ and the weights and bias remain unchanged.
 
 It is very common to train a model multiple times on the same dataset. A complete pass of the dataset is called an **epoch**. Multiple epochs are necessary because:
@@ -438,11 +478,11 @@ for epoch in range(number_of_epochs):
 
 ### Linear Separability
 
-You can use perceptron when the dataset is **linearly separable**. This is the case if there exists one line that separates the categories in such a way that all the occurrences of category A are on one side, and every occurrence of category B is on the other. More formally, a dataset with two classes is linearly separable if there exists a vector W and a scalar b such that:
+You can use the perceptron when the dataset is **linearly separable**. This is the case if there exists one line that separates the categories in such a way that all the occurrences of class A are on one side, and every occurrence of class B is on the other. More formally, a dataset with two classes is linearly separable if there exists a vector W and a scalar b such that:
 W^T x + b > 0 for all points X in class A
 W^T x + b ≤ 0 for all points X in class B
 
-As we've seen before, the dataset used was not entirely linearly separable, no matter the line you drew, there were alwasy a few on the wrong side of the line. If we would generate more examples, the problem would worsen. However, we can take back the idea that was presented in the beginning: encoding the data.
+As we've seen before, the dataset used was not entirely linearly separable, no matter the line you drew, there were alwasy a few on the wrong side of the line. If we would generate more examples, the problem would worsen, since the density would increase. However, we can take back the idea that was presented in the beginning: encoding the data.
 
 Instead of using the amount and the time, we can encode these inputs as follows:
 
@@ -462,19 +502,48 @@ While this encoding makes our problem linearly separable, it comes with trade-of
 2. Fixed thresholds: The 10k and time window become hard-coded decision boundaries
 3. Reduced flexibility: The model can't learn more nuanced patterns in the continuous data
 
-And the problem is reduced to the initial, simple exampl of whether to walk or not. Consider Figure 5, it shows the new plot of all the datapoints. Clearly, they are linearly separable.
+And the problem is reduced to the initial, simple example of whether to walk or not. Consider Figure 5, it shows the new plot of all the datapoints. Clearly, they are linearly separable.
 
-[FIGURE 5 HERE]
+<div align="center">
+
+![Binary encoding resolves to linear separability](./resources/encoding.png)
+*Using a binary encoding we can easily draw a line*
+
+</div>
+
 
 ### Perceptron as logical gates
 
 Another approach of looking at a perceptron is by considering it as logical gates. Suppose all of the following:
 
-$$i = 2$$
-$$b = -1$$
-$$w_1 = w_2 = 1$$
-$$x_1 = 0 or 1$$
-$$x_2 = 0 or 1$$
+<div align="center">
+
+$i = 2$
+
+</div>
+
+<div align="center">
+
+$b = -1$
+
+</div>
+
+<div align="center">
+
+$w_1 = w_2 = 1$
+</div>
+
+<div align="center">
+
+$x_1 = 0 or 1$
+
+</div>
+
+<div align="center">
+
+$x_2 = 0 or 1$
+
+</div>
 
 We then get the following truth table:
 <div align="center">
@@ -491,11 +560,35 @@ We then get the following truth table:
 This is the truth table of an AND gate.
 
 Similarly, we can construct a NAND gate:
-$$i = 2$$
-$$b = -1$$
-$$w_1 = w_2 = -1$$
-$$x_1 = 0 or 1$$
-$$x_2 = 0 or 1$$
+<div align="center">
+
+$i = 2$
+
+</div>
+
+<div align="center">
+
+$b = -1$
+
+</div>
+
+<div align="center">
+
+$w_1 = w_2 = -1$
+</div>
+
+<div align="center">
+
+$x_1 = 0 or 1$
+
+</div>
+
+<div align="center">
+
+$x_2 = 0 or 1$
+
+</div>
+
 
 The truth table:
 <div align="center">
@@ -509,12 +602,12 @@ The truth table:
 
 </div>
 
-For the AND gate, the weights (w_1 = w_2 = 1) and bias (b = -1) were chosen to ensure:
+For the AND gate, the weights ($w_1 = w_2 = 1$) and bias ($b = -1$) were chosen to ensure:
 - Both inputs must be 1 to exceed the threshold: 1 + 1 - 1 = 1 > 0
-- Any other combination falls below: 1 + 0 - 1 = 0 ≤ 0 or 0 + 0 - 1 = -1 ≤ 0
+- Any other combination falls below: $1 + 0 - 1 = 0 \le 0$ or $0 + 0 - 1 = -1 \le 0$
 
-Similarly for NAND, weights (w_1 = w_2 = -1) and bias (b = 1) ensure:
-- Only when both inputs are 1 does the sum fall below zero: -1 - 1 + 1 = -1 ≤ 0
+Similarly for NAND, weights ($w_1 = w_2 = -1$) and bias ($b = 1$) ensure:
+- Only when both inputs are 1 does the sum fall below zero: $-1 - 1 + 1 = -1 \le 0$
 - All other combinations remain positive
 
 Now this exciting, because NAND is one of the universal logic gates, meaning that every other logical gate can be created by combining only NAND gates.
@@ -534,7 +627,12 @@ And this is where we find a very interesting observation. Suppose that we want t
 
 This is an exlusive OR gate, or XOR gate. The XOR problem is fundamentally different because it requires the output to be 1 when exactly one input is 1, but not when both are 1 or both are 0. Geometrically, this means the 1-outputs appear at diagonal corners of the input space. No single straight line can separate these diagonal points from the others - you would need at least two lines to create the necessary separation. Furthermore, this is not a linearly separable problem. Figure 6 shows this, no matter how you try, you cannot draw a line that will cleanly separate the dataset.
 
-[FIGURE 6 HERE]
+<div align="center">
+
+![XOR is not a linearly separatable problem](./resources/xor.png)
+*No straight line can be drawn to split the dataset*
+
+</div>
 
 We know that by connecting multiple NAND gates we can create a XOR gate, which we know is a linearly separable problem. Now, would it not be amazing that by combining multiple perceptrons we would be able to solve these previously unsolvable problems? (HINT: Neural Networks)
 

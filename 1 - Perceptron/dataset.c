@@ -332,7 +332,7 @@ Dataset* create_example_dataset() {
         for (int j = 0; j < NUM_INPUTS; j++) {
             dataset->samples[i].inputs[j] = inputs[i][j];
         }
-        dataset->samples[i].output = outputs_xor [i];
+        dataset->samples[i].output = outputs [i];
     }
 
     return dataset;

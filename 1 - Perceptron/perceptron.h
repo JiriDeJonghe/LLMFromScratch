@@ -36,7 +36,7 @@ typedef struct Dataset {
 */
 typedef struct TrainingParameters {
     float learning_rate; // The learning rate to be used in each training step.
-    int num_training_steps; // The number of training steps to perform.
+    int num_epochs; // The number of epochs to perform.
 } TrainingParameters;
 
 Dataset* create_dataset(int num_samples, int num_inputs);
