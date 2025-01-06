@@ -91,10 +91,9 @@ The Heaviside step function acts like a threshold or decision boundary. In our c
 
 In mathmetical notation, we define the heaviside step function as:
 
-TODO
 <div align="center">
 
-$H(x) = \begin{cases} 1, & x \ge 2 \\ 0, & x < 2 \end{cases}$
+![Heaviside definition](./resources/heaviside_altered.svg)
 
 </div>
 
@@ -151,7 +150,7 @@ Now, let's recall what we did before to get to our decision (output value): we t
 
 <div align="center">
 
-$y_{willingness} = w_{weather}x_{weather} + w_{time}x_{time} = 2\times x_{weather} + 1\times x_{time}$
+$y_{willingness} = w_{weather}x_{weather} + w_{time}x_{time} = 2\dot x_{weather} + 1\times x_{time}$
 
 </div>
 
@@ -187,13 +186,10 @@ Before we move on, let's understand why we need one more piece to complete our p
 
 Indeed, the Heaviside step function actually uses 0 as the decision boundary, meaning that it maps any value smaller than 0 to 0 and any value larger or equal to 0 to 1: 
 
-TODO
-$$
-H(x) := \begin{cases}
-1, & x \ge 0 \\
-0, & x < 0
-\end{cases}
-$$
+<div align="center">
+
+![Heaviside](./resources/heaviside.svg)
+</div>
 
 Fortunately, the perceptron has, besides its inputs, the **bias** to deal with this exact issue. The bias is taken into account in the weighted sum and decides our decision boundary. We update the weighted sum equation: 
 
@@ -264,9 +260,12 @@ Figure 1 provides a visual representation of this process, showing how all these
 <div align="center">
 
 ![Perceptron](./resources/perceptron.png)
-*Diagram of the perceptron*
-
 </div>
+<div align="center">
+
+*Figure 1: Diagram of the perceptron*
+</div>
+
 
 ### Learning from your mistakes
 
@@ -315,8 +314,10 @@ Let's now see how the perceptron behaves using a visual approach. Consider Figur
 <div align="center">
 
 ![Plots of the datapoints](./resources/scatter.png)
-*Different datapoints plotted as a scatterplot*
+</div>
+<div align="center">
 
+*Figure 2: Different datapoints plotted as a scatterplot*
 </div>
 
 Now try drawing a single straight line to split the plot into two areas: one where all the red dots lie, and one where all the blue dots can be found. You will find that it is impossible, so at least try to limit the amount of wrongly placed dots (blue dots on the side of reds, or red dots on the side of blues).
@@ -359,8 +360,10 @@ Figure 3 illustrates how a straight line creates two areas. Your line might actu
 <div align="center">
 
 ![Line creates two areas](./resources/areas.png)
-*The straight line divides the plot into two areas*
+</div>
+<div align="center">
 
+*Figure 3: The straight line divides the plot into two areas*
 </div>
 
 And that's all there is to it! We can now train our perceptron and see how the line evolves over time. Figure 4 shows how this evolution during our training:
@@ -368,8 +371,10 @@ And that's all there is to it! We can now train our perceptron and see how the l
 <div align="center">
 
 ![Lines showing how the model learns](./resources/learning.png)
-*The model changes its parameters over time*
+</div>
+<div align="center">
 
+*Figure 4: The model changes its parameters over time*
 </div>
 
 The purple line, which we randomly generated the weights for classifies everything as fraudulent, which gives a horrendous accuracy of 16%. However, after only having seen 5 samples, the accuracy jumps up to 83%, this is because now every single transfer (except for one) is classified as legitimate (watch the blue line). This is due having many more samples of legitimate transfers then fraudulent. This is what is called an **imbalanced dataset**. Properly handling an imbalanced dataset can be tricky, however, due to the simple nature of our example, it will not prove to be an issue here. 
@@ -411,10 +416,9 @@ $\sum_{i} w_ix_i + b = w_1x_1 + w_2x_2 + \ldots + w_nx_n + b$
 </div>
 
 Or alternatively, using vector notation, let 
-TODO
 <div align="center">
     
-$\vec{w} = \begin{bmatrix} w_1 \\ w_2 \\ \vdots \\ w_n\end{bmatrix}$
+![w_vector](./resources/w_vector.svg)
 
 </div>
 
@@ -422,7 +426,7 @@ and
 
 <div align="center">
 
-$\vec{x} = \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix}$
+![x_vector](./resources/x_vector.svg)
 
 </div>
 
@@ -430,15 +434,15 @@ Then we get
 
 <div align="center">
 
-$weighted_sum = \vec{w}^T \vec{x}+ b$
+$weighted \\ sum = \mathbf{w}^T \mathbf{x}+ b$
 
 </div>
 
 Furthermore, we define the following:
 $w_i^{t+1}$: the next value of weight $i$
 $w_i^{t}$: the current value of weight $i$
-$y$: the target value
-$\hat{y}$: the result of the perceptron
+$y_{real}$: the target value
+$y_{pred}$: the result of the perceptron
 $r$: The learning rate r controls how much we adjust our weights in response to errors:
 - A large learning rate (closer to 1) means bigger adjustments but potentially unstable training
 - A small learning rate (closer to 0) means more stable but slower training
@@ -448,16 +452,16 @@ To update the weights we define the following:
 
 <div align="center">
 
-$w_i^{t+1} = w_i^t + r*(y - \hat{y})*x_i,$
+$w_i^{t+1} = w_i^t + r*(y_{real} - y_{pred})*x_i$
 
 </div>
 <div align="center">
 
-$b^{t+1} = b^{t} + r*(y - \hat{y}).$
+$b^{t+1} = b^{t} + r*(y_{real} - y_{pred})$
 
 </div>
 
-Notice that if the perceptron has predicted the output correctly, than $(y - \hat{y}) = 0$ and the weights and bias remain unchanged.
+Notice that if the perceptron has predicted the output correctly, than $(y_{real} - y_{pred}) = 0$ and the weights and bias remain unchanged.
 
 It is very common to train a model multiple times on the same dataset. A complete pass of the dataset is called an **epoch**. Multiple epochs are necessary because:
 1. The perceptron might not see all important patterns in a single pass
@@ -478,9 +482,9 @@ for epoch in range(number_of_epochs):
 
 ### Linear Separability
 
-You can use the perceptron when the dataset is **linearly separable**. This is the case if there exists one line that separates the categories in such a way that all the occurrences of class A are on one side, and every occurrence of class B is on the other. More formally, a dataset with two classes is linearly separable if there exists a vector W and a scalar b such that:
-W^T x + b > 0 for all points X in class A
-W^T x + b ≤ 0 for all points X in class B
+You can use the perceptron when the dataset is **linearly separable**. This is the case if there exists one line that separates the categories in such a way that all the occurrences of class A are on one side, and every occurrence of class B is on the other. More formally, a dataset with two classes is linearly separable if there exists a vector $\mathbf{w}$ and a scalar $b$ such that:
+$\mathbf{w}^T x + b > 0$ for all points X in class A
+{\mathbf{w}^T x + b ≤ 0$ for all points X in class B
 
 As we've seen before, the dataset used was not entirely linearly separable, no matter the line you drew, there were alwasy a few on the wrong side of the line. If we would generate more examples, the problem would worsen, since the density would increase. However, we can take back the idea that was presented in the beginning: encoding the data.
 
@@ -507,10 +511,13 @@ And the problem is reduced to the initial, simple example of whether to walk or 
 <div align="center">
 
 ![Binary encoding resolves to linear separability](./resources/encoding.png)
-*Using a binary encoding we can easily draw a line*
 
 </div>
+<div align="center">
 
+
+*Figure 5: Using a binary encoding we can easily draw a line*
+</div>
 
 ### Perceptron as logical gates
 
@@ -535,20 +542,20 @@ $w_1 = w_2 = 1$
 
 <div align="center">
 
-$x_1 = 0 or 1$
+$x_1 = 0\\ or\\ 1$
 
 </div>
 
 <div align="center">
 
-$x_2 = 0 or 1$
+$x_2 = 0\\ or\\ 1$
 
 </div>
 
 We then get the following truth table:
 <div align="center">
 
-| $x_1$ | $x_2$ | y |
+| $x_1$ | $x_2$ | $y$ |
 | --- | --- | --- |
 | 0 | 0 | 0 |
 | 0 | 1 | 0 |
@@ -579,13 +586,13 @@ $w_1 = w_2 = -1$
 
 <div align="center">
 
-$x_1 = 0 or 1$
+$x_1 = 0\\ or\\ 1$
 
 </div>
 
 <div align="center">
 
-$x_2 = 0 or 1$
+$x_2 = 0\\ or\\ 1$
 
 </div>
 
@@ -593,7 +600,7 @@ $x_2 = 0 or 1$
 The truth table:
 <div align="center">
 
-| $x_1$ | $x_2$ | y |
+| $x_1$ | $x_2$ | $y$ |
 | --- | --- | --- |
 | 0 | 0 | 1 |
 | 0 | 1 | 1 |
@@ -630,8 +637,11 @@ This is an exlusive OR gate, or XOR gate. The XOR problem is fundamentally diffe
 <div align="center">
 
 ![XOR is not a linearly separatable problem](./resources/xor.png)
-*No straight line can be drawn to split the dataset*
 
+</div>
+<div align="center">
+
+*Figure 6: no straight line can be drawn to split the dataset*
 </div>
 
 We know that by connecting multiple NAND gates we can create a XOR gate, which we know is a linearly separable problem. Now, would it not be amazing that by combining multiple perceptrons we would be able to solve these previously unsolvable problems? (HINT: Neural Networks)
