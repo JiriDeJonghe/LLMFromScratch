@@ -1,4 +1,4 @@
-# Creating a LLM from Scratch
+# Designing an LLM from Scratch
 
 My belief is that everyone can understand LLMs.
 
