@@ -116,7 +116,7 @@ void free_layer_gradients(LayerGradients* layer_gradients);
  *
  * @param network_gradients Pointer to NetworkGradients to be freed
  */
-void free_netork_gradients(NetworkGradients* network_gradients);
+void free_network_gradients(NetworkGradients* network_gradients);
 
 
 #endif

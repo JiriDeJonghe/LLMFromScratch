@@ -62,13 +62,13 @@ Layer* create_layer(size_t num_neurons, size_t num_inputs_per_neuron,
         return NULL;
     }
 
-    Layer* layer = malloc(sizeof(Layer));
+    Layer* layer = (Layer*)malloc(sizeof(Layer));
     if (layer == NULL) {
         perror("Memory allocation failed for layer.");
         return NULL;
     }
 
-    layer->neurons = malloc(num_neurons * sizeof(Neuron));
+    layer->neurons = (Neuron**)malloc(num_neurons * sizeof(Neuron*));
     if (layer->neurons == NULL) {
         perror("Memory allocation failed for neurons array.");
         free(layer);
@@ -100,25 +100,25 @@ Layer* create_layer(size_t num_neurons, size_t num_inputs_per_neuron,
 *
 * @param layer_sizes The sizes of the layers (number of neurons in each layer)
 * @param num_layers The number of layers in this Neural Network
-* @param activations The activation functions for the layers in this Neural Network
+* @param activations The activation functions for the layers in this Neural Network. Last layer doesn't take activation, instead it uses softmax.
 * @param activation_derivates The derivates of the activation functions for the layers in this Neural Network
 *
 * @return Layer* Pointer to the created Layer, NULL if allocation fails
 */
 NeuralNetwork* create_neural_network(size_t* layer_sizes, size_t num_layers,
                                      ActivationFunc* activations, ActivationFunc* activation_derivatives) {
-    if (layer_sizes <= 0 || num_layers <= 0 || activations == NULL || activation_derivatives == NULL) {
+    if (layer_sizes == NULL || num_layers <= 0 || activations == NULL || activation_derivatives == NULL) {
         fprintf(stderr, "Invalid parameters for network creation.\n");
         return NULL;
     }
 
-    NeuralNetwork* neural_network = malloc(sizeof(NeuralNetwork));
+    NeuralNetwork* neural_network = (NeuralNetwork*)malloc(sizeof(NeuralNetwork));
     if (neural_network == NULL) {
         perror("Memory allocation failed for neural network.");
         return NULL;
     }
 
-    neural_network->layers = malloc(num_layers * sizeof(Layer));
+    neural_network->layers = (Layer**)malloc(num_layers * sizeof(Layer*));
     if (neural_network->layers == NULL) {
         perror("Memory allocation failed for layer array.");
         free(neural_network);
@@ -126,8 +126,15 @@ NeuralNetwork* create_neural_network(size_t* layer_sizes, size_t num_layers,
     }
 
     neural_network->num_layers = num_layers;
-    for (size_t i = 0; i < num_layers; i++) {
-        neural_network->layers[i] = create_layer(layer_sizes[i], num_layers, activations[i], activation_derivatives[i]);
+    neural_network->layers[0] = create_layer(layer_sizes[0], layer_sizes[0], activations[0], activation_derivatives[0]);
+    if (neural_network->layers[0] == NULL) {
+        free(neural_network->layers);
+        free(neural_network);
+        return NULL;
+    }
+
+    for (size_t i = 1; i < num_layers-1; i++) {
+        neural_network->layers[i] = create_layer(layer_sizes[i], layer_sizes[i-1], activations[i], activation_derivatives[i]);
         if (neural_network->layers[i] == NULL) {
             for (size_t j = 0; j < i; j++) {
                 free_layer(neural_network->layers[j]);
@@ -138,6 +145,15 @@ NeuralNetwork* create_neural_network(size_t* layer_sizes, size_t num_layers,
         }
     }
 
+    neural_network->layers[num_layers-1] = create_layer(layer_sizes[num_layers-1], layer_sizes[num_layers-2], activations[num_layers-2], activation_derivatives[num_layers-2]);
+    if (neural_network->layers[num_layers-1] == NULL) {
+        for (size_t j = 0; j < num_layers-1; j++) {
+            free_layer(neural_network->layers[j]);
+        }
+        free(neural_network->layers);
+        free(neural_network);
+        return NULL;
+    }
 
     return neural_network;
 }
@@ -162,8 +178,14 @@ NeuronGradients* create_neuron_gradients(Neuron *neuron) {
         return NULL;
     }
 
+    neuron_gradients->num_weights = neuron->num_inputs;
     neuron_gradients->error = 0.0f;
-    neuron_gradients->weight_gradients = malloc(neuron->num_inputs * sizeof(float));
+    neuron_gradients->weight_gradients = (float*)malloc(neuron->num_inputs * sizeof(float));
+    if (neuron_gradients->weight_gradients == NULL) {
+        perror("Memory allocation failed for weights gradient creation.");
+        free(neuron_gradients);
+        return NULL;
+    }
 
     return neuron_gradients;
 }
@@ -189,7 +211,7 @@ LayerGradients* create_layer_gradients(Layer* layer) {
     }
 
     layer_gradients->num_neurons = layer->num_neurons;
-    layer_gradients->neuron_gradients = malloc(layer->num_neurons * sizeof(NeuronGradients));
+    layer_gradients->neuron_gradients = (NeuronGradients**)malloc(layer->num_neurons * sizeof(NeuronGradients*));
     for (size_t i = 0; i < layer->num_neurons; i++) {
         layer_gradients->neuron_gradients[i] = create_neuron_gradients(layer->neurons[i]);
     }
@@ -218,7 +240,7 @@ NetworkGradients* create_network_gradients(NeuralNetwork* network) {
     }
 
     network_gradients->num_layers = network->num_layers;
-    network_gradients->layer_gradients = malloc(network->num_layers * sizeof(LayerGradients));
+    network_gradients->layer_gradients = (LayerGradients**)malloc(network->num_layers * sizeof(LayerGradients*));
     for (size_t i = 0; i < network->num_layers; i++) {
         Layer* layer = network->layers[i];
         network_gradients->layer_gradients[i] = create_layer_gradients(layer);

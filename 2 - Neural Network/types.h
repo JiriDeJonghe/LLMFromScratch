@@ -26,6 +26,7 @@ typedef struct NeuralNetwork {
 typedef struct {
     float* weight_gradients; // Gradients for each weight
     float error; // Error for this node; important for backprop
+    size_t num_weights;
 } NeuronGradients;
 
 typedef struct {

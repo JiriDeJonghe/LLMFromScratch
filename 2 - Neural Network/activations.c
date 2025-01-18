@@ -1,3 +1,4 @@
+#include "activations.h"
 #include <math.h>
 
 #include "types.h"
@@ -38,7 +39,7 @@ float relu(float value) {
 *
 * @param value Value to evaluate the derivative of the ReLU for
 */
-float relu_derivate(float value) {
+float relu_derivative(float value) {
     return value > 0 ? 1 : 0;
 }
 
@@ -51,13 +52,13 @@ float relu_derivate(float value) {
 void softmax(Layer* layer) {
     float sum = 0.0f;
 
-    for (int i = 0; i < layer->num_neurons; i++) {
+    for (size_t i = 0; i < layer->num_neurons; i++) {
         Neuron* neuron = layer->neurons[i];
         neuron->output = exp(neuron->output);
         sum += neuron->output;
     }
 
-    for (int i = 0; i < layer->num_neurons; i++) {
+    for (size_t i = 0; i < layer->num_neurons; i++) {
         Neuron* neuron = layer->neurons[i];
         neuron->output /= sum;
     }
