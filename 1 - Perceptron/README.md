@@ -30,11 +30,9 @@ So if $x_{weather} = 1$, then that means that the weather is good. If $x_{weathe
 
 Since your willingness to go for a walk depends on these two statements we can define the following equation: 
 
-<div align="center">
-
-$y_{willingness} = f(x_{weather}, x_{time})$,
-
-</div>
+$$
+y_{willingness} = f(x_{weather}, x_{time}),
+$$
 
 with $f$ representing a function that we don't know yet. To explain it in natural language, we define our **output** $y_{willingness}$ as a function that takes $x_{weather}$ and $x_{time}$ as **inputs**.
 
@@ -193,42 +191,38 @@ Indeed, the Heaviside step function actually uses 0 as the decision boundary, me
 
 Fortunately, the perceptron has, besides its inputs, the **bias** to deal with this exact issue. The bias is taken into account in the weighted sum and decides our decision boundary. We update the weighted sum equation: 
 
-<div align="center">
+$$
+y_{willingness} = w_{weather}*x_{weather} + w_{time}*x_{time} + b,
+$$
 
-$y_{willingness} = w_{weather}*x_{weather} + w_{time}*x_{time} + b,$
-
-</div>
 
 with $b$ the bias.
 
 We can find $b$ by taking a close look at this equation. We now that $y_{willingness} = 0$ is the boundary, so we can work out the following:
 
-<div align="center">
+$$
+2\times x_{weather} + x_{time} + b = 0
+$$
 
-$2\times x_{weather} + x_{time} + b = 0$
-
-</div>
 
 The minimum for us to go on a walk is $x_{weather} = 1$ and $x_{time} = 0$:
 
-<div align="center">
+$$
+2 + 0 + b = 0
+$$
 
-$2 + 0 + b = 0$
-</div>
 
-<div align="center">
+$$
+b = -2
+$$
 
-$b = -2$
-
-</div>
 
 We fill in the equation to show that it is indeed the same, the formula becomes:
 
-<div align="center">
+$$
+y_{willingness} = 2\times x_{weather} + x_{time} - 2
+$$
 
-$y_{willingness} = 2\times x_{weather} + x_{time} - 2$
-
-</div>
 
 Let's consider our table again:
 
@@ -326,19 +320,17 @@ This is exactly what the perceptron tries to do as well: it tries to find the li
 
 You might wonder how the perceptron is trying to place a straight line. If you've read the first section, recall the weighted sum of before: it turns out that the weighted sum actually defines a straight line:
 
-<div align="center">
+$$
+w_{amount}x_{amount} + w_{time}x_{time} + b = 0
+$$
 
-$w_{amount}x_{amount} + w_{time}x_{time} + b = 0$
-
-</div>
 
 If you don't immediately find how this defines a function, it's worth transforming it in a way that may be more familiar:
 
-<div align="center">
+$$
+x_{amount} = \frac{-w_{time}x_{time} - b}{w_{amount}}
+$$
 
-$x_{amount} = \frac{-w_{time}x_{time} - b}{w_{amount}}$
-
-</div>
 
 Which might remind you of $y = f(x)$ which is indeed a way to represent a function. Since $f(x)$ is linear, it defines a straight line.
 
@@ -347,11 +339,10 @@ The approach the perceptron takes to find the (or 'a', if multiple solutions can
 
 But what does it mean to have better performance? To measure the quality of a model, we use **metrics**. Metrics are dependent on what the use-case is of the model, but in this case we can keep it very simple: 
 
-<div align="center">
 
-$Accuracy = \frac{Correctly\ Classified\ Datapoints}{Total\ Number\ of\ Datapoints}.$
-
-</div>
+$$
+Accuracy = \frac{Correctly\ Classified\ Datapoints}{Total\ Number\ of\ Datapoints}.
+$$
 
 To conclude: a perceptron tries to find the parameters of a linear function, that separates the examples into two areas, one for each category. At inference time, we take a look at the inputs of this occurrence, and look at which area it falls into. It will get assigned to that category.
 
@@ -409,11 +400,9 @@ In this section I assume the reader to have a somewhat stronger background in ma
 
 As mentioned before, the perceptron works by taking the weighted sum over the inputs using the weights: 
 
-<div align="center">
-
-$\sum_{i} w_ix_i + b = w_1x_1 + w_2x_2 + \ldots + w_nx_n + b$
-
-</div>
+$$
+\sum_{i} w_ix_i + b = w_1x_1 + w_2x_2 + \ldots + w_nx_n + b
+$$
 
 Or alternatively, using vector notation, let 
 <div align="center">
@@ -432,11 +421,9 @@ and
 
 Then we get 
 
-<div align="center">
-
-$weighted \\ sum = \mathbf{w}^T \mathbf{x}+ b$
-
-</div>
+$$
+weighted \\ sum = \mathbf{w}^T \mathbf{x}+ b
+$$
 
 Furthermore, we define the following:
 $w_i^{t+1}$: the next value of weight $i$
@@ -450,16 +437,13 @@ $r$: The learning rate r controls how much we adjust our weights in response to 
 
 To update the weights we define the following:
 
-<div align="center">
+$$
+w_i^{t+1} = w_i^t + r*(y_{real} - y_{pred})*x_i
+$$
 
-$w_i^{t+1} = w_i^t + r*(y_{real} - y_{pred})*x_i$
-
-</div>
-<div align="center">
-
-$b^{t+1} = b^{t} + r*(y_{real} - y_{pred})$
-
-</div>
+$$
+b^{t+1} = b^{t} + r*(y_{real} - y_{pred})
+$$
 
 Notice that if the perceptron has predicted the output correctly, than $(y_{real} - y_{pred}) = 0$ and the weights and bias remain unchanged.
 
@@ -523,34 +507,25 @@ And the problem is reduced to the initial, simple example of whether to walk or 
 
 Another approach of looking at a perceptron is by considering it as logical gates. Suppose all of the following:
 
-<div align="center">
+$$
+i = 2
+$$
 
-$i = 2$
+$$
+b = -1
+$$
 
-</div>
+$$
+w_1 = w_2 = 1
+$$
 
-<div align="center">
+$$
+x_1 = 0\\ or\\ 1
+$$
 
-$b = -1$
-
-</div>
-
-<div align="center">
-
-$w_1 = w_2 = 1$
-</div>
-
-<div align="center">
-
-$x_1 = 0\\ or\\ 1$
-
-</div>
-
-<div align="center">
-
-$x_2 = 0\\ or\\ 1$
-
-</div>
+$$
+x_2 = 0\\ or\\ 1
+$$
 
 We then get the following truth table:
 <div align="center">
@@ -567,35 +542,26 @@ We then get the following truth table:
 This is the truth table of an AND gate.
 
 Similarly, we can construct a NAND gate:
-<div align="center">
 
-$i = 2$
+$$
+i = 2
+$$
 
-</div>
+$$
+b = -1
+$$
 
-<div align="center">
+$$
+w_1 = w_2 = -1
+$$
 
-$b = -1$
+$$
+x_1 = 0\\ or\\ 1
+$$
 
-</div>
-
-<div align="center">
-
-$w_1 = w_2 = -1$
-</div>
-
-<div align="center">
-
-$x_1 = 0\\ or\\ 1$
-
-</div>
-
-<div align="center">
-
-$x_2 = 0\\ or\\ 1$
-
-</div>
-
+$$
+x_2 = 0\\ or\\ 1
+$$
 
 The truth table:
 <div align="center">
