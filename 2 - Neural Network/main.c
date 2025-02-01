@@ -27,22 +27,24 @@ float calculate_accuracy(NeuralNetwork *network, Dataset *dataset,
       correct++;
     }
 
-    printf("Input: [%.0f, %.0f], Expected: %.0f, Predicted: %.2f\n",
-           dataset->samples[i].inputs[0], dataset->samples[i].inputs[1],
-           expected, prediction);
+    // printf("Input: [%.0f, %.0f], Expected: %.0f, Predicted: %.2f\n",
+    //     dataset->samples[i].inputs[0], dataset->samples[i].inputs[1],
+    //    expected, prediction);
   }
 
   return (float)correct / num_cases;
 }
 
 int main() {
-  // Change these two values to what you want to use
+  // Change these two values to what you want to use. IMPORTANT: make sure that
+  // the dataset corresponds with the output_type, e.g., if training a
+  // classifier that has one output neuron, use binary.
   enum OutputType output_type = BINARY;
-  char *dataset_name = "fraud";
+  char *dataset_name = "fraud_long";
 
   // You can also change the following for other execution parameters
   const size_t epochs = 1000;
-  const float learning_rate = 0.01f;
+  const float learning_rate = 0.0001f;
 
   LayerActivationFunc *layer_activation_func;
   if (output_type == PROBS) {
@@ -50,13 +52,15 @@ int main() {
   } else if (output_type == BINARY) {
     layer_activation_func = heaviside_step_function;
   }
-  size_t layer_sizes[] = {2, 3, 1};      // Input, (Hidden)*, Output
+  size_t layer_sizes[] = {2, 2, 1};      // Input, (Hidden)*, Output
   ActivationFunc activations[] = {relu}; // Only for the hidden layers
   ActivationFunc activation_derivatives[] = {
       relu_derivative}; // Only for the hidden layers
 
   NeuralNetwork *network = create_neural_network(layer_sizes, 3, activations,
                                                  activation_derivatives);
+
+  // ---- Below no touchy required ----
   if (network == NULL) {
     fprintf(stderr, "Failed to create neural network\n");
     return 1;
@@ -95,6 +99,10 @@ int main() {
     if ((epoch + 1) % 10 == 0) {
       printf("Epoch %zu, Error: %.4f\n", epoch + 1,
              total_error / num_test_cases);
+    }
+
+    if ((epoch + 1) % 100 == 0) {
+      print_network_weights(network);
     }
   }
 

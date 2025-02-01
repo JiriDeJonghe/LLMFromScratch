@@ -5,6 +5,26 @@
 #include "network.h"
 #include "types.h"
 
+/**
+ * @brief Prints the network weights for all the layers and neurons
+ *
+ * @param network Pointer to the network of which to print the weights
+ */
+void print_network_weights(NeuralNetwork *network) {
+  for (size_t l = 1; l < network->num_layers; l++) {
+    Layer *layer = network->layers[l];
+    printf("\nLayer %zu\n", l);
+    for (size_t n = 0; n < layer->num_neurons; n++) {
+      Neuron *neuron = layer->neurons[n];
+      printf("Neuron %zu\n", n);
+      for (size_t w = 0; w < neuron->num_inputs; w++) {
+        printf("Weight %zu: %f\n", w, neuron->weights[w]);
+      }
+      printf("Bias: %f\n", neuron->bias);
+    }
+  }
+}
+
 // Network Creation
 
 /**
@@ -49,9 +69,9 @@ Neuron *create_neuron(size_t num_inputs) {
  *
  * @param num_neurons The number of neurons there are in this layer
  * @param num_inputs_per_neuron The number of inputs the neurons in this layer
- * should have. We assume a fully connected NN so the number is the same for all
- * neurons in this layer and should be equal to the number of neurons in the
- * previous layer.
+ * should have. We assume a fully connected NN so the number is the same for
+ * all neurons in this layer and should be equal to the number of neurons in
+ * the previous layer.
  * @param activation The activation function for the neurons in this layer
  * @param activation_derivate The derivate of the activation function for the
  * neurons in this layer
@@ -102,12 +122,13 @@ Layer *create_layer(size_t num_neurons, size_t num_inputs_per_neuron,
 /**
  * @brief Creates and allocates memory for a Neural Network
  *
- * @param layer_sizes The sizes of the layers (number of neurons in each layer)
+ * @param layer_sizes The sizes of the layers (number of neurons in each
+ * layer)
  * @param num_layers The number of layers in this Neural Network
  * @param activations The activation functions for the layers in this Neural
  * Network. Last layer doesn't take activation, instead it uses softmax.
- * @param activation_derivates The derivates of the activation functions for the
- * layers in this Neural Network
+ * @param activation_derivates The derivates of the activation functions for
+ * the layers in this Neural Network
  *
  * @return Layer* Pointer to the created Layer, NULL if allocation fails
  */

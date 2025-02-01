@@ -12,7 +12,7 @@ However, it is safe to say that, since we're discussing this here in this day an
 ### Perceptron Recap
 
 In the last chapter we discussed the perceptron, which is one of the simplest forms of artificial neural networks. We defined it as having the following properties:
-1. It's a **classifer**: it categorizes things into a group (walk/don't walk). 
+1. It's a **classifier**: it categorizes things into a group (walk/don't walk). 
 2. It's **binary**: there are only two categories to assign to (walk/don't walk, fraudulent/legitimate).
 3. It's **linear**: it makes its decision by drawing a straigt line between two categories.
 
@@ -162,7 +162,42 @@ Just like we did for the perceptron, let's visualize the training of the neural 
 
 TODO example
 
+Wait, this actually doesn't look like what we expected to get. Let's see if we can figure out what exactly went wrong. First look at our final accuracy. It turns out it's only 87%...Not only is this not close to our theoretical 100%, it is actually worse than our single perceptron from last chapter! Now, this is worrysome, maybe we made a mistrake along the way...Is there something wrong with our reasoning? Or maybe the issue lies in the implementation of our neural network.
+
+Actually it's none of those two. To realise this we can scale up the number of samples that we use to train our neural network. Suppose that instead of 100 samples, we use 1000 samples instead. The distribution now might looks as follows:
+
+<div align="center">
+
+![Scatterplot with 1000 samples](./resources/cases_upscaled.png)
+</div>
+
+Let's now do what we did last chapter for the perceptron: draw a single, straight line that clearly separates the red and blue dots. You'll quickly realise that such a line does not really exist, we can only make an as-good-as-it-gets estimation. However, using two straight lines, we can much better separate the data. Indeed, we can even separate them perfectly. Let's train our perceptron and neural network on both cases and compare:
+
+<div align="center">
+
+Number of Samples | Perceptron Accuracy | Neural Network Accuracy
+--- | --- | --- 
+100 | 97% | 89% | 
+1000 | 93% | 97.3% | 
+
+</div>
+
+This is very intersting! Let's analyze this table in detail. This small table can actually teach us a lot about the nature of neural networks.
+1. Notice that if we increase the number of samples, the accuracy of the perceptron drops, while this of the neural network increases. This is not a coincidence, initially I chose a spread of samples that was relatively well separable using a single line. You might've noticed that there are not a lot of datapoints in the bottom left corner of our original scatterplot, where the value is below 10k and the time of transfer is between 12 and 6 AM. I handpicked this example to illustrate the workings of a perceptron, in a way I **skewed** the data, which means that the data is not representative of the actual problem you're trying to solve. When increasing the number of samples, the data becomes more and more representative, this phenomenon is commonly known as the **law of large numbers**.
+2. The accuracy of our neural network increased, 
+
+2. Larger neural networks can represent more complex data
+3. Larger neural networks require more training data to get good results
+4. While theoretically we should be able to get perfect accuracy, in reality we often don't
+
+This last point is very important and is, all the way up to today, a shortcoming of neural networks and deep learning: it is extremely difficult, not to say impossible, to create a model that will achieve an accuracy of 100%.
+
+Finally, we will see if we can deduce some information based on the final weights of our neurons in the hidden layer.
+
+TODO: Maybe add some content on freezing weights, since the current evaluation doesn't show that much interisting stuff to discuss, or maybe with fixed weights and compare to random weights, and show similar performance and start discussion on imperfection etc? Think that woul be nice tbh
+
 This is something very common up until modern architectures, where certain neurons pay attention to a certain attribute! 
+
 Although both our neurons separately would perform worse, together they are more mighty then the perceptron from before. In other words, three neurons that individually perform worse, perform better once they are working together.
 
 ### Inference in a neural network

@@ -4,20 +4,6 @@
 #include "activations.h"
 #include "types.h"
 
-void print_network_weights(NeuralNetwork *network) {
-  for (size_t l = 0; l < network->num_layers; l++) {
-    Layer *layer = network->layers[l];
-    printf("\nLayer %zu\n", l);
-    for (size_t n = 0; n < layer->num_neurons; n++) {
-      Neuron *neuron = layer->neurons[n];
-      printf("Neuron %zu\n", n);
-      for (size_t w = 0; w < neuron->num_inputs; w++) {
-        printf("Weight %zu: %f\n", w, neuron->weights[w]);
-      }
-    }
-  }
-}
-
 float calculate_cross_entropy_loss(float *predictions, float *truths,
                                    size_t num_classes) {
   float loss = 0.0f;

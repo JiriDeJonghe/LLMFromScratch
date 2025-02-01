@@ -3,6 +3,6 @@
 
 #include "perceptron.h"
 
-Dataset* create_example_dataset();
+Dataset *create_example_dataset(char *dataset_name);
 
 #endif
