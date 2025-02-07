@@ -15,10 +15,15 @@ void print_network_weights(NeuralNetwork *network);
  * @brief Creates and allocates memory for a Neuron
  *
  * @param num_inputs The number of incoming edges this neuron has
+ * @param initial_values the initial values of the weights of the neuron. The
+ * length of the array should be equal to the number of inputs
+ * @param is_frozen True if the weights of this neuron are frozen and should not
+ * be changed during training, otherwise False
  *
  * @return Neuron* Pointer to the created Neuron, NULL if allocation fails
  */
-Neuron *create_neuron(size_t num_inputs);
+Neuron *create_neuron(size_t num_inputs, double *initial_values,
+                      bool is_frozen);
 
 /**
  * @brief Creates and allocates memory for a Layer
@@ -31,12 +36,18 @@ Neuron *create_neuron(size_t num_inputs);
  * @param activation The activation function for the neurons in this layer
  * @param activation_derivate The derivate of the activation function for the
  * neurons in this layer
+ * @param initial_values Array of initial weights for layers (NULL for random
+ * initialization). The length of the array should be equal to the num_neurons.
+ * Each element in this array should be equal to num_inputs_per_neuron
+ * @param frozen_neurons Array indicating which neurons should be frozen (NULL
+ * for none). Should be length of num_neurons.
  *
  * @return Layer* Pointer to the created Layer, NULL if allocation fails
  */
 Layer *create_layer(size_t num_neurons, size_t num_inputs_per_neuron,
                     ActivationFunc activation,
-                    ActivationFunc activation_derivative);
+                    ActivationFunc activation_derivative,
+                    double **initial_values, bool *frozen_neurons);
 
 /**
  * @brief Creates and allocates memory for a Neural Network
@@ -47,12 +58,22 @@ Layer *create_layer(size_t num_neurons, size_t num_inputs_per_neuron,
  * Network
  * @param activation_derivates The derivates of the activation functions for the
  * layers in this Neural Network
+ * @param initial_values Array of initial weights for layers (NULL for random
+ * init). The array should be of length num_layers-1. The element at position i
+ * in the array is a matrix of layer_sizes[i] vectors of length
+ * layer-sizes[i-1]. Pass NULL for the entire parameter to use random
+ * initialization Pass NULL for specific indices to use random initialization
+ * for those layers
+ * @param frozen_neurons Array of boolean arrays indicating which neurons should
+ * be frozen (NULL for none).
  *
  * @return Layer* Pointer to the created Layer, NULL if allocation fails
  */
 NeuralNetwork *create_neural_network(size_t *layer_sizes, size_t num_layers,
                                      ActivationFunc *activations,
-                                     ActivationFunc *activation_derivative);
+                                     ActivationFunc *activation_derivative,
+                                     double ***initial_values,
+                                     bool **frozen_neurons);
 
 /**
  * @brief Creates and allocates memory for a NeuronGradients

@@ -26,10 +26,6 @@ float calculate_accuracy(NeuralNetwork *network, Dataset *dataset,
         (prediction < 0.5 && expected == 0)) {
       correct++;
     }
-
-    // printf("Input: [%.0f, %.0f], Expected: %.0f, Predicted: %.2f\n",
-    //     dataset->samples[i].inputs[0], dataset->samples[i].inputs[1],
-    //    expected, prediction);
   }
 
   return (float)correct / num_cases;

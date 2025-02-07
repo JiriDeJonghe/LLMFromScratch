@@ -171,13 +171,16 @@ void backward_propagate(NeuralNetwork *network, NetworkGradients *gradients,
     Layer *layer = network->layers[l];
     for (size_t n = 0; n < layer->num_neurons; n++) {
       Neuron *neuron = layer->neurons[n];
-      for (size_t w = 0; w < neuron->num_inputs; w++) {
-        neuron->weights[w] -= learning_rate * gradients->layer_gradients[l]
-                                                  ->neuron_gradients[n]
-                                                  ->weight_gradients[w];
+      if (!neuron->frozen) {
+        for (size_t w = 0; w < neuron->num_inputs; w++) {
+          neuron->weights[w] -= learning_rate * gradients->layer_gradients[l]
+                                                    ->neuron_gradients[n]
+                                                    ->weight_gradients[w];
+        }
+        neuron->bias -=
+            learning_rate *
+            gradients->layer_gradients[l]->neuron_gradients[n]->error;
       }
-      neuron->bias -= learning_rate *
-                      gradients->layer_gradients[l]->neuron_gradients[n]->error;
     }
   }
 }

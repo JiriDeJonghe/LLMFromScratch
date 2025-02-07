@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,10 +32,15 @@ void print_network_weights(NeuralNetwork *network) {
  * @brief Creates and allocates memory for a Neuron
  *
  * @param num_inputs The number of incoming edges this neuron has
+ * @param initial_values the initial values of the weights of the neuron. The
+ * length of the array should be equal to the number of inputs
+ * @param is_frozen True if the weights of this neuron are frozen and should not
+ * be changed during training, otherwise False
  *
  * @return Neuron* Pointer to the created Neuron, NULL if allocation fails
  */
-Neuron *create_neuron(size_t num_inputs) {
+Neuron *create_neuron(size_t num_inputs, double *initial_values,
+                      bool is_frozen) {
   if (num_inputs <= 0) {
     fprintf(stderr, "Invalid parameters for neuron creation.\n");
     return NULL;
@@ -56,9 +62,11 @@ Neuron *create_neuron(size_t num_inputs) {
   neuron->num_inputs = num_inputs;
   neuron->bias = (float)random() / RAND_MAX - 0.5f;
   neuron->output = 0.0f;
+  neuron->frozen = is_frozen;
 
   for (size_t i = 0; i < num_inputs; i++) {
-    neuron->weights[i] = (float)random() / RAND_MAX - 0.5f;
+    neuron->weights[i] =
+        initial_values ? initial_values[i] : (float)random() / RAND_MAX - 0.5f;
   }
 
   return neuron;
@@ -75,12 +83,18 @@ Neuron *create_neuron(size_t num_inputs) {
  * @param activation The activation function for the neurons in this layer
  * @param activation_derivate The derivate of the activation function for the
  * neurons in this layer
+ * @param initial_values Array of initial weights for layers (NULL for random
+ * initialization). The length of the array should be equal to the num_neurons.
+ * Each element in this array should be equal to num_inputs_per_neuron
+ * @param frozen_neurons Array indicating which neurons should be frozen (NULL
+ * for none). Should be length of num_neurons.
  *
  * @return Layer* Pointer to the created Layer, NULL if allocation fails
  */
 Layer *create_layer(size_t num_neurons, size_t num_inputs_per_neuron,
                     ActivationFunc activation,
-                    ActivationFunc activation_derivative) {
+                    ActivationFunc activation_derivative,
+                    double **initial_values, bool *frozen_neurons) {
   if (num_neurons <= 0 || num_inputs_per_neuron <= 0 || activation == NULL ||
       activation_derivative == NULL) {
     fprintf(stderr, "Invalid parameters for layer creation.\n");
@@ -105,7 +119,10 @@ Layer *create_layer(size_t num_neurons, size_t num_inputs_per_neuron,
 
   layer->num_neurons = num_neurons;
   for (size_t i = 0; i < num_neurons; i++) {
-    layer->neurons[i] = create_neuron(num_inputs_per_neuron);
+    bool is_frozen = frozen_neurons ? frozen_neurons[i] : false;
+    layer->neurons[i] =
+        create_neuron(num_inputs_per_neuron,
+                      initial_values ? initial_values[i] : NULL, is_frozen);
     if (layer->neurons[i] == NULL) {
       for (size_t j = 0; j < i; j++) {
         free_neuron(layer->neurons[j]);
@@ -129,12 +146,22 @@ Layer *create_layer(size_t num_neurons, size_t num_inputs_per_neuron,
  * Network. Last layer doesn't take activation, instead it uses softmax.
  * @param activation_derivates The derivates of the activation functions for
  * the layers in this Neural Network
+ * @param initial_values Array of initial weights for layers (NULL for random
+ * init). The array should be of length num_layers-1. The element at position i
+ * in the array is a matrix of layer_sizes[i] vectors of length
+ * layer-sizes[i-1]. Pass NULL for the entire parameter to use random
+ * initialization Pass NULL for specific indices to use random initialization
+ * for those layers
+ * @param frozen_neurons Array of boolean arrays indicating which neurons should
+ * be frozen (NULL for none).
  *
  * @return Layer* Pointer to the created Layer, NULL if allocation fails
  */
 NeuralNetwork *create_neural_network(size_t *layer_sizes, size_t num_layers,
                                      ActivationFunc *activations,
-                                     ActivationFunc *activation_derivatives) {
+                                     ActivationFunc *activation_derivatives,
+                                     double ***initial_values,
+                                     bool **frozen_neurons) {
   if (layer_sizes == NULL || num_layers <= 0 || activations == NULL ||
       activation_derivatives == NULL) {
     fprintf(stderr, "Invalid parameters for network creation.\n");
@@ -157,8 +184,9 @@ NeuralNetwork *create_neural_network(size_t *layer_sizes, size_t num_layers,
 
   // Creation of input layer
   neural_network->num_layers = num_layers;
-  neural_network->layers[0] =
-      create_layer(layer_sizes[0], layer_sizes[0], identity, identity_derivate);
+  neural_network->layers[0] = create_layer(
+      layer_sizes[0], layer_sizes[0], identity, identity_derivate, NULL, NULL);
+
   if (neural_network->layers[0] == NULL) {
     free(neural_network->layers);
     free(neural_network);
@@ -169,7 +197,10 @@ NeuralNetwork *create_neural_network(size_t *layer_sizes, size_t num_layers,
   for (size_t i = 1; i < num_layers - 1; i++) {
     neural_network->layers[i] =
         create_layer(layer_sizes[i], layer_sizes[i - 1], activations[i - 1],
-                     activation_derivatives[i - 1]);
+                     activation_derivatives[i - 1],
+                     initial_values ? initial_values[i - 1] : NULL,
+                     frozen_neurons ? frozen_neurons[i - 1] : NULL);
+
     if (neural_network->layers[i] == NULL) {
       for (size_t j = 0; j < i; j++) {
         free_layer(neural_network->layers[j]);
@@ -181,9 +212,11 @@ NeuralNetwork *create_neural_network(size_t *layer_sizes, size_t num_layers,
   }
 
   // Creation of output layer
-  neural_network->layers[num_layers - 1] =
-      create_layer(layer_sizes[num_layers - 1], layer_sizes[num_layers - 2],
-                   identity, identity_derivate);
+  neural_network->layers[num_layers - 1] = create_layer(
+      layer_sizes[num_layers - 1], layer_sizes[num_layers - 2], identity,
+      identity_derivate, initial_values ? initial_values[num_layers - 2] : NULL,
+      frozen_neurons ? frozen_neurons[num_layers - 2] : NULL);
+
   if (neural_network->layers[num_layers - 1] == NULL) {
     for (size_t j = 0; j < num_layers - 1; j++) {
       free_layer(neural_network->layers[j]);

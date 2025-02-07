@@ -1,6 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
 
@@ -9,6 +10,7 @@ typedef struct Neuron {
   float bias;
   float output;
   size_t num_inputs;
+  bool frozen; // Indicates whether the weights of this Neuron are frozen
 } Neuron;
 
 typedef struct Layer {
