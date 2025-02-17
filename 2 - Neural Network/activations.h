@@ -50,12 +50,29 @@ float relu(float value);
 float relu_derivative(float value);
 
 /**
+ * @brief Applies the Heaviside step function to a value
+ *
+ * @param value Value to evaluate the heaviside step function for
+ */
+float heaviside_step_function(float value);
+
+/**
+ * @brief Applies the derivate of the Heaviside step function to a value
+ * In reality you can't use a non-differentiable function for backpropagation.
+ * We make a simplification to learn anyway
+ *
+ * @param value Value to evaluate the derivative of the heaviside step function
+ * for
+ */
+float heaviside_step_function_derivate(float value);
+
+/**
  * @brief Applies the Heaviside step function to all neurons in a layer.
  * Implemented this way to calculate the final output decision
  *
  * @param layer Layer to apply the heaviside_step_function to
  */
-void heaviside_step_function(Layer *layer);
+void layer_heaviside_step_function(Layer *layer);
 
 /**
  * @brief Applies the softmax function to a layer. Applying the softmax will

@@ -50,12 +50,29 @@ float relu(float value) { return value > 0 ? value : 0; }
 float relu_derivative(float value) { return value > 0 ? 1 : 0; }
 
 /**
+ * @brief Applies the Heaviside step function to a value
+ *
+ * @param value Value to evaluate the heaviside step function for
+ */
+float heaviside_step_function(float value) { return value > 0 ? 1 : 0; }
+
+/**
+ * @brief Applies the derivate of the Heaviside step function to a value
+ * In reality you can't use a non-differentiable function for backpropagation.
+ * We make a simplification to learn anyway
+ *
+ * @param value Value to evaluate the derivative of the heaviside step function
+ * for
+ */
+float heaviside_step_function_derivate(float value) { return 1; }
+
+/**
  * @brief Applies the Heaviside step function to all neurons in a layer.
  * Implemented this way to calculate the final output decision
  *
  * @param layer Layer to apply the heaviside_step_function to
  */
-void heaviside_step_function(Layer *layer) {
+void layer_heaviside_step_function(Layer *layer) {
   for (size_t i = 0; i < layer->num_neurons; i++) {
     Neuron *neuron = layer->neurons[i];
     neuron->output = exp(neuron->output);

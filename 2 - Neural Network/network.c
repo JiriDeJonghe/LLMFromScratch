@@ -60,7 +60,6 @@ Neuron *create_neuron(size_t num_inputs, double *initial_values,
   }
 
   neuron->num_inputs = num_inputs;
-  neuron->bias = (float)random() / RAND_MAX - 0.5f;
   neuron->output = 0.0f;
   neuron->frozen = is_frozen;
 
@@ -68,6 +67,9 @@ Neuron *create_neuron(size_t num_inputs, double *initial_values,
     neuron->weights[i] =
         initial_values ? initial_values[i] : (float)random() / RAND_MAX - 0.5f;
   }
+  neuron->bias = initial_values
+                     ? initial_values[num_inputs]
+                     : (float)random() / RAND_MAX - 0.5f; // Initial bias value
 
   return neuron;
 }
@@ -112,6 +114,15 @@ Layer *create_layer(size_t num_neurons, size_t num_inputs_per_neuron,
     perror("Memory allocation failed for neurons array.");
     free(layer);
     return NULL;
+  }
+
+  if (initial_values) {
+    for (size_t i = 0; i < num_neurons; i++) {
+      if (!initial_values[i]) {
+        fprintf(stderr, "Invalid initial values provided for neuron %zu\n", i);
+        return NULL;
+      }
+    }
   }
 
   layer->activation = activation;
