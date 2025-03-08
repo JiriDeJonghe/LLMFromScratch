@@ -4,6 +4,7 @@
 #include "perceptron.h"
 
 // 0 means it is fraud, 1 means it is safe
+// Field 1 is time, Field 2 is amount in k
 Sample fraud[] = {
     {(float[]){1.169397139419055f, 13.81043565827701f}, (int){0}},
     {(float[]){6.938631834955604f, 15.584932585017079f}, (int){1}},

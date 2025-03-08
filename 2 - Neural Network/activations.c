@@ -75,7 +75,7 @@ float heaviside_step_function_derivate(float value) { return 1; }
 void layer_heaviside_step_function(Layer *layer) {
   for (size_t i = 0; i < layer->num_neurons; i++) {
     Neuron *neuron = layer->neurons[i];
-    neuron->output = exp(neuron->output);
+    neuron->output = heaviside_step_function(neuron->output);
   }
 }
 

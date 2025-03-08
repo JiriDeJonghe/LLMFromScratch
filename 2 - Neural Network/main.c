@@ -26,6 +26,23 @@ float calculate_accuracy(NeuralNetwork *network, Dataset *dataset,
     if ((prediction >= 0.5 && expected == 1) ||
         (prediction < 0.5 && expected == 0)) {
       correct++;
+    } else {
+      /*printf("\n\nInput %f, %f\n", dataset->samples[i].inputs[0],*/
+      /*       dataset->samples[i].inputs[1]);*/
+      /*printf("Output %f\n", *dataset->samples[i].expected_outputs);*/
+      /*for (size_t l = 1; l < network->num_layers; l++) {*/
+      /*  Layer *layer = network->layers[l];*/
+      /*  printf("\nLayer %zu\n", l);*/
+      /*  for (size_t n = 0; n < layer->num_neurons; n++) {*/
+      /*    Neuron *neuron = layer->neurons[n];*/
+      /*    printf("Neuron %zu\n", n);*/
+      /*    for (size_t w = 0; w < neuron->num_inputs; w++) {*/
+      /*      printf("Weight %zu: %f\n", w, neuron->weights[w]);*/
+      /*    }*/
+      /*    printf("Bias: %f\n", neuron->bias);*/
+      /*    printf("Output: %f\n", neuron->output);*/
+      /*  }*/
+      /*}*/
     }
   }
 
@@ -81,8 +98,10 @@ int main(int argc, char *argv[]) {
         malloc((NUMBER_OF_LAYERS - 2) * sizeof(ActivationFunc));
     layer_sizes = malloc(NUMBER_OF_LAYERS * sizeof(size_t));
 
-    activations[0] = relu;
-    activation_derivatives[0] = relu_derivative;
+    /*activations[0] = relu;*/
+    /*activation_derivatives[0] = relu_derivative;*/
+    activations[0] = heaviside_step_function;
+    activation_derivatives[0] = heaviside_step_function_derivate;
 
     if (output_type == BINARY) {
       layer_sizes[0] = 2;
@@ -98,6 +117,10 @@ int main(int argc, char *argv[]) {
   double ***initial_values = NULL;
   bool **frozen_neurons = NULL;
   if (argc > 3 && strcmp(argv[3], "true") == 0) {
+
+    activations[0] = heaviside_step_function;
+    activation_derivatives[0] = heaviside_step_function_derivate;
+
     initial_values = malloc(2 * sizeof(double **)); // Two non-input layers
 
     // Setting hidden layer initial values
@@ -110,6 +133,14 @@ int main(int argc, char *argv[]) {
         initial_values[0][i][j] = (double)random() / RAND_MAX - 0.5;
       }
     }
+
+    initial_values[0][0][0] = -1.0;
+    initial_values[0][0][1] = 0.0;
+    initial_values[0][0][2] = 6;
+
+    initial_values[0][1][0] = 0.0;
+    initial_values[0][1][1] = 1.0;
+    initial_values[0][1][2] = -10.0;
 
     // Setting output layer initial values
     initial_values[1] = malloc(1 * sizeof(double *));  // one neuron
@@ -124,8 +155,8 @@ int main(int argc, char *argv[]) {
 
     // Hidden layer not frozen
     frozen_neurons[0] = malloc(2 * sizeof(bool));
-    frozen_neurons[0][0] = false;
-    frozen_neurons[0][1] = false;
+    frozen_neurons[0][0] = true;
+    frozen_neurons[0][1] = true;
 
     // Output layer frozen
     frozen_neurons[1] = malloc(1 * sizeof(bool));
@@ -193,6 +224,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  print_network_weights(network);
   printf("\nTraining completed. Final results:\n");
   float accuracy = calculate_accuracy(network, dataset, num_test_cases,
                                       layer_activation_func);

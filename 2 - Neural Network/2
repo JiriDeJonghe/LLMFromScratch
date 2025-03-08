@@ -189,58 +189,15 @@ Indeed, if we draw these lines it will be very clear that we can achieve 100\% *
 ![Scatterplot with perfect accuracy](./resources/perfect_accuracy.png)
 </div>
 
-Okay, we're now ready to actually train the model and see the magic in action! After training we get the following results:
 
-The weights for layer 1, neuron 1:
-$$
-w_{1,1} = 0.53
-$$
 
-$$
-w_{2,1} = -0.21
-$$
+visualize the training of the neural network: we will be able to see how the weights of our individual perceptrons evolve to decide on our two lines that will be used for inference.
 
-$$
-b_{1} = 0.14
-$$
+TODO example
 
-The weights for layer 1, neuron 2:
-$$
-w_{1,2} = 1.06 
-$$
+Wait, this actually doesn't look like what we expected to get. Let's see if we can figure out what exactly went wrong. First look at our final accuracy. It turns out it's only 87%...Not only is this not close to our theoretical 100%, it is actually worse than our single perceptron from last chapter! Now, this is worrysome, maybe we made a mistrake along the way...Is there something wrong with our reasoning? Or maybe the issue lies in the implementation of our neural network.
 
-$$
-w_{2,2} = -0.09
-$$
-
-$$
-b_{2} = -0.197
-$$
-
-The weights for layer 2, neuron 1 (output neuron):
-$$
-w_{1,3} = -0.25
-$$
-
-$$
-w_{2,3} = -0.07
-$$
-
-$$
-b_{3} = 0.317
-$$
-
-Wait, this makes no sense? This is not at all what we expected and theoritized. There's no way this neural network will perform well, right? Well, this neural network achieves an accuracy of 98%, which is better than our single perceptron, but still not the 100% we should be able to get. What is going on?
-
-This result brings us to two VERY important discoveries:
-1. **Duality of Explainability**: we can't explain this network. While it does perform well, it is very difficult to tell why the weights are they way the are. This is an important advantage and disadvantage of neural networks. How can it be both good and bad? It is good because it means that the neural network itself will figure out a way to represent the data and to use them for inference. We don't manually need to encode or steer the model in a way that we, as humans deem logical. So this is good, this means we can leave the neural network alone and let it figure it out. However, this can also be bad, because we don't know WHAT it has learned. We know the training data, but we don't know what these exact weights represent. In our self-thought out example it was obvious, but imagine that it gets much more complicated, than we can not work it out ourselves, so in the end we must rely on the neural network to make sense of the data.
-2. **Local Optimum**: now why are we not getting 100% accuracy? It has to do with how the neural network is trained. In the beginning of training, we don't know what the weights of the network should be, and thus we simply assign random weights. Using these weights, a neural network will look at the data and make adjustments. Because there is randomness, the training of this neural network is **undeterministic**, meaning that if you retrain this model, you will get different weights. Because of these random weights, it is also very difficult for the neural network to end up at the best optimal place, instead it ends up in a **local optimum**, which means that no matter how the neural network will change its weights according to our training method, it will perform worse. A good analogy here can be of lakes in the mountains. Clearly they are at a relatively high altitude and due to gravity they would flow downwards towards the sea if possible, however, the mountains surrounding the lake limit the water of flowing downwards. The lake is a local optimum. Now you might think, why are we randomly initializing the weights? It's because usually we don't know what a good starting value would be. There are so-called heuristics that make a quick estimation of what good start values would be, but if we knew what the optimal values were, then we wouldn't have to train the model.
-
-Indeed, we can achieve 100% accuracy, but that's only *theoretically*. This is one of the inherent flaws of neural networks, you will (almost) **never** get a perfect model. I say almost because if all stars line up you can get perfect random initialization values leading to a perfect model, but the chances for this are astronomical for more complex situations. This is true to such an extent that having a model that performs TOO well is seen as a red flag for data scientists.
-
-### Taking off the training wheels
-
-I have to admit something, so far I've taken the fraudulent cases in such a way that the performance of the perceptron would be relatively okay. To realise this we can scale up the number of samples that we use to train our neural network. Suppose that instead of 100 samples, we use 1000 samples instead. The distribution now might looks as follows:
+Actually it's none of those two. To realise this we can scale up the number of samples that we use to train our neural network. Suppose that instead of 100 samples, we use 1000 samples instead. The distribution now might looks as follows:
 a
 <div align="center">
 
